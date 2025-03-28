@@ -107,6 +107,12 @@ const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
 function getBangredirectUrl() {
   const url = new URL(window.location.href);
   const query = url.searchParams.get("q")?.trim() ?? "";
+  const customDefaultBang = url.searchParams.get("d")?.trim()?.toLowerCase();
+
+  const selectedDefaultBang =
+    bangs.find((b) => b.t === customDefaultBang) ??
+    bangs.find((b) => b.t === (localStorage.getItem("default-bang") ?? "g"));
+
   if (!query) {
     noSearchDefaultPageRender();
     return null;
@@ -114,7 +120,8 @@ function getBangredirectUrl() {
 
   const match = query.match(/!(\S+)/i);
   const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+  const selectedBang =
+    bangs.find((b) => b.t === bangCandidate) ?? selectedDefaultBang;
 
   if (query === `!${selectedBang?.t}`) {
     const redirectUrl = selectedBang?.d;
