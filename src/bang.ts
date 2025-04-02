@@ -122206,4 +122206,13 @@ export const bangs = [
     t: "cshsem",
     u: "https://conditional.csh.rit.edu/attendance_ts",
   },
+  {
+    c: "CSH",
+    d: "members.csh.rit.edu",
+    r: 0,
+    s: "CSH Members",
+    sc: "Page",
+    t: "cshm",
+    u: "https://members.csh.rit.edu",
+  },
 ];
