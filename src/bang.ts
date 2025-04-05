@@ -122073,15 +122073,6 @@ export const bangs = [
   },
   {
     c: "CSH",
-    d: "wiki.csh.rit.edu",
-    r: 0,
-    s: "CSH Media Wiki",
-    sc: "Search",
-    t: "cshwiki",
-    u: "https://wiki.csh.rit.edu/index.php?search={{{s}}}",
-  },
-  {
-    c: "CSH",
     d: "quotefault.csh.rit.edu",
     r: 0,
     s: "CSH Quotefault q search",
@@ -122194,7 +122185,7 @@ export const bangs = [
     r: 0,
     s: "CSH Housing",
     sc: "Page",
-    t: "cshhousign",
+    t: "cshhousing",
     u: "https://conditional.csh.rit.edu/housing",
   },
   {
@@ -122214,5 +122205,14 @@ export const bangs = [
     sc: "Page",
     t: "cshsem",
     u: "https://conditional.csh.rit.edu/attendance_ts",
+  },
+  {
+    c: "CSH",
+    d: "members.csh.rit.edu",
+    r: 0,
+    s: "CSH Members",
+    sc: "Page",
+    t: "cshm",
+    u: "https://members.csh.rit.edu",
   },
 ];

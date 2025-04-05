@@ -4,23 +4,35 @@ import "./global.css";
 function noSearchDefaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
   app.innerHTML = `
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-      <div class="content-container">
-        <h1>Unq**ck</h1>
-        <h3>A CSH fork of Und*ck</h3>
-        <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs</a> and more.</p>
-        <div class="url-container">
-          <input type="text" class="url-input" value="${window.location.origin}?q=%s" readonly />
-          <button class="copy-button">
-            <img src="/clipboard.svg" alt="Copy" />
-          </button>
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <div class="content-container">
+          <h1>Unq**ck</h1>
+          <h3>A CSH fork of Und*ck</h3>
+          <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs</a> and more.</p>
+          <div class="url-container">
+            <input type="text" class="url-input" value="${window.location.origin}?q=%s" readonly />
+            <button class="copy-button">
+              <img src="/clipboard.svg" alt="Copy" />
+            </button>
+          </div>
+          <div class="url-container">
+            <input type="text" class="url-input default-bang" value="Default: !${defaultBang?.t} - ${defaultBang?.u}" readonly />
+          </div>
+          <div class="separator-bar"></div>
+          <h3>Search Existing bangs below:</h3>
+            <p>Type !bang or search term to filter. You can copy a specific bang or set it as your default bang to change your preferred search engine.</p>
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="No search term? No problem, keep staring!" />
+            <div class="search-results"></div>
+          </div>
         </div>
-        <div class="separator-bar"></div>
-        <h3>Search Existing bangs below:</h3>
-        <div class="search-container">
-          <input type="text" class="search-input" placeholder="No search term? No problem, keep staring!" />
-          <div class="search-results"></div>
-        </div>
+        <footer class="footer">
+          CSH Links:
+          • Original links:
+          <a href="https://t3.chat" target="_blank">t3.chat</a>
+          • <a href="https://x.com/theo" target="_blank">theo</a>
+          • <a href="https://github.com/t3dotgg/unduck" target="_blank">github</a>
+        </footer>
       </div>
       <footer class="footer">
         CSH Links:
@@ -45,7 +57,6 @@ function noSearchDefaultPageRender() {
   copyButton.addEventListener("click", async () => {
     await navigator.clipboard.writeText(urlInput.value);
     copyIcon.src = "/clipboard-check.svg";
-
     setTimeout(() => {
       copyIcon.src = "/clipboard.svg";
     }, 2000);
@@ -54,16 +65,8 @@ function noSearchDefaultPageRender() {
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.toLowerCase();
     searchResults.innerHTML = "";
-
-    if (query.length === 0) {
-      return;
-    }
-
-    if (query.includes('!') && query !== '!') {
-        var search = query.replace('!', '');
-    } else {
-        var search = query;
-    }
+    if (query.length === 0) return;
+    const search = query.startsWith("!") ? query.slice(1) : query;
 
     const filteredBangs = bangs.filter(
       (bang) =>
@@ -85,7 +88,7 @@ function noSearchDefaultPageRender() {
       copyButton.className = "copy-button";
       copyButton.innerHTML = `<img src="/clipboard.svg" alt="Copy" />`;
       copyButton.addEventListener("click", async () => {
-        await navigator.clipboard.writeText('!' + bang.t);
+        await navigator.clipboard.writeText("!" + bang.t);
         copyButton.innerHTML = `<img src="/clipboard-check.svg" alt="Copied" />`;
         setTimeout(
           () =>
@@ -94,7 +97,16 @@ function noSearchDefaultPageRender() {
         );
       });
 
+      const setDefaultButton = document.createElement("button");
+      setDefaultButton.className = "set-default-button";
+      setDefaultButton.textContent = "Set Default";
+      setDefaultButton.addEventListener("click", () => {
+        localStorage.setItem("default-bang", bang.t);
+        location.reload();
+      });
+
       resultContainer.appendChild(input);
+      resultContainer.appendChild(setDefaultButton);
       resultContainer.appendChild(copyButton);
       searchResults.appendChild(resultContainer);
     });
@@ -107,6 +119,11 @@ const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
 function getBangredirectUrl() {
   const url = new URL(window.location.href);
   const query = url.searchParams.get("q")?.trim() ?? "";
+  const customDefaultBang = url.searchParams.get("d")?.trim()?.toLowerCase();
+
+  const selectedDefaultBang =
+    bangs.find((b) => b.t === customDefaultBang) ??
+    bangs.find((b) => b.t === (localStorage.getItem("default-bang") ?? "g"));
 
   if (!query) {
     noSearchDefaultPageRender();
@@ -115,28 +132,23 @@ function getBangredirectUrl() {
 
   const match = query.match(/!(\S+)/i);
   const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+  const selectedBang =
+    bangs.find((b) => b.t === bangCandidate) ?? selectedDefaultBang;
 
   if (query === `!${selectedBang?.t}`) {
     const redirectUrl = selectedBang?.d;
-
-    if (redirectUrl && !/^https?:\/\//i.test(redirectUrl)) {
-      return `https://${redirectUrl}`;
-    }
-
-    return redirectUrl;
+    return redirectUrl && !/^https?:\/\//i.test(redirectUrl)
+      ? `https://${redirectUrl}`
+      : redirectUrl;
   }
 
   const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
-
-  const searchUrl = selectedBang?.u.replace(
-    "{{{s}}}",
-    encodeURIComponent(cleanQuery).replace(/%2F/g, "/")
+  return (
+    selectedBang?.u.replace(
+      "{{{s}}}",
+      encodeURIComponent(cleanQuery).replace(/%2F/g, "/")
+    ) ?? null
   );
-
-  if (!searchUrl) return null;
-
-  return searchUrl;
 }
 
 function doRedirect() {
