@@ -2,192 +2,194 @@
 
 /* Font fallback that closely matches Inter metrics */
 @font-face {
-  font-family: "Inter Fallback";
-  size-adjust: 107%;
-  ascent-override: 90%;
-  src: local("Arial");
-}
-
-:root {
-  font-family: Inter, "Inter Fallback", system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-    "Open Sans", "Helvetica Neue", sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-  width: 100%;
-}
-
-body {
-  line-height: 1.5;
-  font-weight: 400;
-  font-size: 16px;
-  color: #1a1a1a;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-a {
-  color: #444444;
-}
-a:hover {
-  color: #888888;
-}
-
-button {
-  font: inherit;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-input,
-textarea {
-  font: inherit;
-}
-
-/* Add these new styles */
-.url-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-/* Add this new style */
-.content-container {
-  max-width: 42rem;
-  text-align: center;
-  padding: 0 8px;
-}
-
-/* Update url-input width to be 100% since container will control max width */
-.url-input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 100%;
-  background: #f5f5f5;
-}
-
-.copy-button,
-.set-default-button {
-  padding: 8px;
-  color: #1a1a1a;
-  border-radius: 4px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.copy-button:hover,
-.set-default-button:hover {
-  background: #f0f0f0;
-}
-
-.copy-button:active,
-.set-default-button:active {
-  background: #e5e5e5;
-}
-
-.copy-button img {
-  width: 20px;
-  height: 20px;
-}
-
-/* Add footer styles */
-.footer {
-  position: fixed;
-  bottom: 16px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-}
-
-.footer a {
-  color: #666;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  color: #333;
-}
-
-.separator-bar {
-  margin: 10px 0;
-  width: 100%;
-  height: 1px;
-  background-color: #ccc;
-}
-
-.search-container {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.search-results {
-  max-height: 250px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
-  padding: 5px;
-  background: white;
-  display: flex;
-  flex-direction: column;
-}
-
-.search-result {
-  display: flex;
-  align-items: center;
-  margin: 2px 0;
-}
-
-.search-result input {
-  flex: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: #f9f9f9;
-}
-
-.search-result,
-.copy-button {
-  margin-left: 5px;
-}
-
-.set-default-button {
-  margin-left: 10px;
-}
+    font-family: "Inter Fallback";
+    size-adjust: 107%;
+    ascent-override: 90%;
+    src: local("Arial");
+  }
+  
+  :root {
+    font-family: Inter, "Inter Fallback", system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+      "Open Sans", "Helvetica Neue", sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    color-scheme: dark;
+    background-color: #1a1a1a;
+  }
+  
+  body {
+    line-height: 1.5;
+    font-weight: 400;
+    font-size: 16px;
+    color: #f0f0f0;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  a {
+    color: #888;
+  }
+  a:hover {
+    color: #aaa;
+  }
+  
+  button {
+    font: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+  input,
+  textarea {
+    font: inherit;
+  }
+  
+  /* Add these new styles */
+  .url-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  /* Add this new style */
+  .content-container {
+    max-width: 42rem;
+    text-align: center;
+    padding: 0 8px;
+  }
+  
+  /* Update url-input width to be 100% since container will control max width */
+  .url-input {
+    padding: 8px 12px;
+    border: 1px solid #2b2a33;
+    border-radius: 4px;
+    width: 100%;
+    background: #2b2a33;
+  }
+  
+  .copy-button,
+  .set-default-button {
+    padding: 8px;
+    color: #fff;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .copy-button:hover,
+  .set-default-button:hover {
+    background: #4b4959;
+  }
+  
+  .copy-button:active,
+  .set-default-button:active {
+    background: #6c6980;
+  }
+  
+  .copy-button img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Add footer styles */
+  .footer {
+    position: fixed;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .footer a {
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .footer a:hover {
+    color: #333;
+  }
+  
+  .separator-bar {
+    margin: 10px 0;
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+  }
+  
+  .search-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #2b2a33;
+    background: #2b2a33;
+  }
+  
+  .search-results {
+    max-height: 250px;
+    overflow-y: auto;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .search-result {
+    display: flex;
+    align-items: center;
+    margin: 2px 0;
+  }
+  
+  .search-result input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #2b2a33;
+    border-radius: 5px;
+    background: #2b2a33;
+  }
+  
+  .search-result,
+  .copy-button {
+    margin-left: 5px;
+  }
+  
+  .set-default-button {
+    margin-left: 10px;
+  }
+  
