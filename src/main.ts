@@ -24,6 +24,10 @@ function noSearchDefaultPageRender() {
       </div>
       <footer class="footer">
         CSH Links:
+        <a href="https://csh.rit.edu" target="_blank">csh.rit.edu</a>
+        • <a href="https://github.com/0mega24/" target="_blank">omega24</a>
+        • <a href="https://git.csh.rit.edu/omega24/unquack" target="_blank">gitlab</a>
+        | Original links:
         • Original links:
         <a href="https://t3.chat" target="_blank">t3.chat</a>
         • <a href="https://x.com/theo" target="_blank">theo</a>
