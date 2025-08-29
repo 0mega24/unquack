@@ -44847,6 +44847,15 @@ export const bangs = [
     u: "http://www.google.com/products?q={{{s}}}&sa=N&tab=pf",
   },
   {
+    c: "Tech",
+    d: "docs.google.com/forms",
+    r: 377,
+    s: "Google Docs",
+    sc: "Startups",
+    t: "gforms",
+    u: "https://docs.google.com/forms/u/0/?pli=1&tgif=c&q={{{s}}}",
+  },
+  {
     c: "Online Services",
     d: "docs.google.com",
     r: 26,
