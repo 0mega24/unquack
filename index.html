@@ -1,43 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      html {
-        background-color: #1f1f1f;
-        color-scheme: dark;
-      }
-    </style>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="description" content="A faster bang redirect." />
     <link rel="icon" type="image/svg+xml" href="/search.svg" />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    />
+    <!-- Apply saved theme before first paint to avoid flash -->
+    <script>if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light";</script>
+    <style>html{color-scheme:dark;background:#1a1a1a}body{background:#1a1a1a}html[data-theme="light"]{color-scheme:light;background:#f8f8fc}html[data-theme="light"] body{background:#f8f8fc}</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       media="print"
       onload="this.media='all'"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>unQ**ck</title>
-    <meta
-      name="description"
-      content="A better default search engine (with bangs!)"
-    />
   </head>
-  <body style="background-color: transparent">
+  <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
