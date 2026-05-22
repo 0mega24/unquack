@@ -1,195 +1,342 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"); */
+/* -- Font ------------------------------------------------------------------ */
 
-/* Font fallback that closely matches Inter metrics */
 @font-face {
-    font-family: "Inter Fallback";
-    size-adjust: 107%;
-    ascent-override: 90%;
-    src: local("Arial");
-  }
-  
-  :root {
-    font-family: Inter, "Inter Fallback", system-ui, -apple-system,
-      BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-      "Open Sans", "Helvetica Neue", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html,
-  body {
-    height: 100%;
-    width: 100%;
-    color-scheme: dark;
-    background-color: #1a1a1a;
-  }
-  
-  body {
-    line-height: 1.5;
-    font-weight: 400;
-    font-size: 16px;
-    color: #f0f0f0;
-  }
-  
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 600;
-    line-height: 1.2;
-  }
-  
-  a {
-    color: #888;
-  }
-  a:hover {
-    color: #aaa;
-  }
-  
-  button {
-    font: inherit;
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-  
-  input,
-  textarea {
-    font: inherit;
-  }
-  
-  /* Add these new styles */
-  .url-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-  }
-  
-  /* Add this new style */
-  .content-container {
-    max-width: 42rem;
-    text-align: center;
-    padding: 0 8px;
-  }
-  
-  /* Update url-input width to be 100% since container will control max width */
-  .url-input {
-    padding: 8px 12px;
-    border: 1px solid #2b2a33;
-    border-radius: 4px;
-    width: 100%;
-    background: #2b2a33;
-  }
-  
-  .copy-button,
-  .set-default-button {
-    padding: 8px;
-    color: #fff;
-    border-radius: 4px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .copy-button:hover,
-  .set-default-button:hover {
-    background: #4b4959;
-  }
-  
-  .copy-button:active,
-  .set-default-button:active {
-    background: #6c6980;
-  }
-  
-  .copy-button img {
-    width: 20px;
-    height: 20px;
-  }
-  
-  /* Add footer styles */
-  .footer {
-    position: fixed;
-    bottom: 16px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .footer a {
-    color: #666;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  
-  .footer a:hover {
-    color: #333;
-  }
-  
-  .separator-bar {
-    margin: 10px 0;
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-  }
-  
-  .search-container {
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #2b2a33;
-    background: #2b2a33;
-  }
-  
-  .search-results {
-    max-height: 250px;
-    overflow-y: auto;
-    border-radius: 5px;
-    margin-top: 5px;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-result {
-    display: flex;
-    align-items: center;
-    margin: 2px 0;
-  }
-  
-  .search-result input {
-    flex: 1;
-    padding: 5px;
-    border: 1px solid #2b2a33;
-    border-radius: 5px;
-    background: #2b2a33;
-  }
-  
-  .search-result,
-  .copy-button {
-    margin-left: 5px;
-  }
-  
-  .set-default-button {
-    margin-left: 10px;
-  }
-  
+  font-family: "Inter Fallback";
+  size-adjust: 107%;
+  ascent-override: 90%;
+  src: local("Arial");
+}
+
+/* -- Variables ------------------------------------------------------------- */
+
+:root {
+  font-family: Inter, "Inter Fallback", system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bg: #1a1a1a;
+  --bg-input: #2b2a33;
+  --bg-hover: #3d3c47;
+  --bg-active: #4b4959;
+  --text: #f0f0f0;
+  --text-muted: #999;
+  --text-subtle: #666;
+  --link: #8b8b9e;
+  --link-hover: #c0c0d4;
+  --border: #3a3a4a;
+  --separator: #3a3a4a;
+}
+
+[data-theme="light"] {
+  --bg: #f8f8fc;
+  --bg-input: #eeeef4;
+  --bg-hover: #dddde8;
+  --bg-active: #cbcbd8;
+  --text: #111118;
+  --text-muted: #555;
+  --text-subtle: #777;
+  --link: #5555aa;
+  --link-hover: #2222cc;
+  --border: #ccccd8;
+  --separator: #ccccd8;
+}
+
+/* -- Reset & base ---------------------------------------------------------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  height: 100%;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+body {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+button {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: var(--text);
+}
+
+code {
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+  background: var(--bg-input);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+/* -- Layout ---------------------------------------------------------------- */
+
+.page-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+.content-container {
+  max-width: 42rem;
+  width: 100%;
+  text-align: center;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.separator-bar {
+  width: 100%;
+  height: 1px;
+  background-color: var(--separator);
+  margin: 0.25rem 0;
+}
+
+/* -- URL display ----------------------------------------------------------- */
+
+.url-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.url-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text);
+  min-width: 0;
+}
+
+/* -- Buttons --------------------------------------------------------------- */
+
+.copy-button {
+  flex-shrink: 0;
+  padding: 6px;
+  border-radius: 6px;
+  color: var(--text);
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-button:hover {
+  background: var(--bg-hover);
+}
+
+.copy-button:active {
+  background: var(--bg-active);
+}
+
+/* -- Theme toggle ---------------------------------------------------------- */
+
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--bg-input);
+  color: var(--text);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 100;
+  border: 1px solid var(--border);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-hover);
+}
+
+.theme-toggle:active {
+  background: var(--bg-active);
+}
+
+/* -- Search ---------------------------------------------------------------- */
+
+.search-container {
+  width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-input:focus {
+  border-color: var(--text-muted);
+}
+
+.search-results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 10;
+  overflow-y: auto;
+  border-radius: 6px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-result input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text);
+  min-width: 0;
+}
+
+.set-default-button {
+  flex-shrink: 0;
+  min-width: 6.25rem;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  transition: background 0.15s, color 0.15s;
+}
+
+.set-default-button:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.set-default-button:active:not(:disabled) {
+  background: var(--bg-active);
+}
+
+.set-default-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.search-empty {
+  padding: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.search-results {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+}
+
+.scroll-sentinel {
+  height: 1px;
+  flex-shrink: 0;
+}
+
+/* -- Footer ---------------------------------------------------------------- */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-subtle);
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+}
+
+.footer a {
+  color: var(--text-subtle);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  color: var(--text);
+}
