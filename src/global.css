@@ -605,8 +605,9 @@ code {
 .custom-io-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
   text-align: left;
 }
 
@@ -614,8 +615,9 @@ code {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-left: auto;
+  flex-wrap: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .import-mode-toggle {
@@ -819,4 +821,45 @@ code {
 
 .custom-btn-save:active {
   opacity: 0.85;
+}
+
+/* -- Mobile ---------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .page-center {
+    justify-content: flex-start;
+    padding-top: 3.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .content-container {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .custom-list {
+    max-height: min(20rem, calc(100dvh - 16rem));
+  }
+
+  .set-default-button {
+    min-width: 0;
+  }
+
+  .custom-io-row {
+    gap: 0.35rem;
+  }
+
+  .custom-io-row .custom-btn-secondary {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .import-controls {
+    gap: 0.35rem;
+  }
+
+  .import-mode-toggle .toggle-opt {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+  }
 }
