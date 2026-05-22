@@ -1,43 +1,19 @@
 import { bangs } from "./bang";
 import "./global.css";
+import { ICON_CLIPBOARD, ICON_SUN, ICON_MOON, ICON_SEARCH } from "./icons";
+import { initTheme, toggleTheme, isCurrentlyLight } from "./theme";
+import { renderCustomPage, getCustomBangs } from "./custom";
+import { footerHtml } from "./footer";
+import { bangLabelHtml, attachCopyClick, navigateWithExit } from "./utils";
 
 type Bang = (typeof bangs)[number];
 
-// -- Icons ------------------------------------------------------------------
-
-const SVG_ATTRS =
-  `xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" ` +
-  `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
-
-const ICON_CLIPBOARD = `<svg ${SVG_ATTRS}><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>`;
-const ICON_CLIPBOARD_CHECK = `<svg ${SVG_ATTRS}><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>`;
-const ICON_SUN = `<svg ${SVG_ATTRS}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
-const ICON_MOON = `<svg ${SVG_ATTRS}><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>`;
-
-// -- Theme ------------------------------------------------------------------
-
-function initTheme() {
-  if (localStorage.getItem("theme") === "light") {
-    document.documentElement.dataset.theme = "light";
-  }
-}
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const goingLight = html.dataset.theme !== "light";
-  if (goingLight) {
-    html.dataset.theme = "light";
-    localStorage.setItem("theme", "light");
-  } else {
-    html.removeAttribute("data-theme");
-    localStorage.removeItem("theme");
-  }
-  const btn = document.querySelector<HTMLButtonElement>(".theme-toggle");
-  if (btn) {
-    btn.innerHTML = goingLight ? ICON_MOON : ICON_SUN;
-    btn.title = goingLight ? "Switch to dark mode" : "Switch to light mode";
-  }
-}
+const builtinBangsLower = bangs.map((b) => ({
+  bang: b,
+  tL: b.t.toLowerCase(),
+  sL: b.s.toLowerCase(),
+  dL: b.d.toLowerCase(),
+}));
 
 // -- Search -----------------------------------------------------------------
 
@@ -45,24 +21,26 @@ const BATCH_SIZE = 25;
 
 function matchBangs(query: string): Bang[] {
   const q = query.startsWith("!") ? query.slice(1).toLowerCase() : query.toLowerCase();
-  return bangs.filter(
+  const custom = getCustomBangs().filter(
     (b) =>
       b.t.toLowerCase().includes(q) ||
       b.s.toLowerCase().includes(q) ||
       b.d.toLowerCase().includes(q),
   );
+  const builtin = builtinBangsLower
+    .filter(({ tL, sL, dL }) => tL.includes(q) || sL.includes(q) || dL.includes(q))
+    .map(({ bang }) => bang);
+  return [...custom, ...builtin];
 }
 
-function renderBangCard(bang: Bang, defaultInput: HTMLInputElement): HTMLElement {
-  const currentDefault = localStorage.getItem("default-bang") ?? "g";
-
+function renderBangCard(bang: Bang, defaultInput: HTMLInputElement, currentDefault: string): HTMLElement {
   const card = document.createElement("div");
   card.className = "search-result";
 
-  const label = document.createElement("input");
-  label.type = "text";
-  label.value = `!${bang.t} - ${bang.s} (${bang.d})`;
-  label.readOnly = true;
+  const label = document.createElement("div");
+  label.className = "bang-label";
+  label.tabIndex = -1;
+  label.innerHTML = bangLabelHtml(bang);
 
   const defaultBtn = document.createElement("button");
   defaultBtn.className = "set-default-button";
@@ -81,16 +59,10 @@ function renderBangCard(bang: Bang, defaultInput: HTMLInputElement): HTMLElement
   }
 
   const copyBtn = document.createElement("button");
-  copyBtn.className = "copy-button";
+  copyBtn.className = "copy-button accent-icon";
   copyBtn.title = "Copy bang";
   copyBtn.innerHTML = ICON_CLIPBOARD;
-  copyBtn.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(`!${bang.t}`);
-    copyBtn.innerHTML = ICON_CLIPBOARD_CHECK;
-    setTimeout(() => {
-      copyBtn.innerHTML = ICON_CLIPBOARD;
-    }, 2000);
-  });
+  attachCopyClick(copyBtn, () => `!${bang.t}`);
 
   card.appendChild(label);
   card.appendChild(defaultBtn);
@@ -109,6 +81,7 @@ function initSearch(
   let allResults: Bang[] = [];
   let renderedCount = 0;
   let sentinel: HTMLDivElement | null = null;
+  let isOpen = false;
 
   function updateMaxHeight() {
     const inputRect = searchInput.getBoundingClientRect();
@@ -130,8 +103,9 @@ function initSearch(
     sentinel?.remove();
     sentinel = null;
 
+    const currentDefault = localStorage.getItem("default-bang") ?? "g";
     const batch = allResults.slice(renderedCount, renderedCount + BATCH_SIZE);
-    batch.forEach((bang) => searchResults.appendChild(renderBangCard(bang, defaultInput)));
+    batch.forEach((bang) => searchResults.appendChild(renderBangCard(bang, defaultInput, currentDefault)));
     renderedCount += batch.length;
 
     if (renderedCount < allResults.length) {
@@ -150,7 +124,13 @@ function initSearch(
     searchResults.innerHTML = "";
     sentinel = null;
 
-    if (!query) return;
+    if (!query) {
+      if (isOpen) {
+        searchResults.classList.remove("is-open");
+        isOpen = false;
+      }
+      return;
+    }
 
     allResults = matchBangs(query);
     renderedCount = 0;
@@ -160,58 +140,61 @@ function initSearch(
       empty.className = "search-empty";
       empty.textContent = "No bangs found.";
       searchResults.appendChild(empty);
-      return;
+    } else {
+      renderNextBatch();
     }
 
-    renderNextBatch();
+    if (!isOpen) {
+      void searchResults.offsetWidth;
+      searchResults.classList.add("is-open");
+      isOpen = true;
+    }
   });
 }
 
 // -- Home page --------------------------------------------------------------
 
-const defaultBang = bangs.find((b) => b.t === (localStorage.getItem("default-bang") ?? "g"));
-const defaultBangDisplay = defaultBang
-  ? `Default: !${defaultBang.t} - ${defaultBang.u}`
-  : "Default: !g - https://google.com/search?q={{{s}}}";
-
 function renderHomePage() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
-  const isLight = document.documentElement.dataset.theme === "light";
+  const isLight = isCurrentlyLight();
+
+  const defaultKey = localStorage.getItem("default-bang") ?? "g";
+  const defaultBang =
+    getCustomBangs().find((b) => b.t === defaultKey) ??
+    bangs.find((b) => b.t === defaultKey);
+  const defaultBangDisplay = defaultBang
+    ? `Default: !${defaultBang.t} - ${defaultBang.u}`
+    : "Default: !g - https://google.com/search?q={{{s}}}";
 
   app.innerHTML = `
     <button class="theme-toggle" title="${isLight ? "Switch to dark mode" : "Switch to light mode"}">${isLight ? ICON_MOON : ICON_SUN}</button>
     <div class="page-center">
       <div class="content-container">
-        <h1>Unq**ck</h1>
-        <h3>A fork of Und*ck</h3>
-        <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs</a> and more.</p>
+        <h1>Unq<span class="title-star">**</span>ck</h1>
+        <p class="page-subtitle">A fork of <a href="https://unduck.link" target="_blank">Und*ck</a></p>
+        <p class="page-desc">DuckDuckGo's bang redirects are too slow. Add the URL below as a custom search engine to your browser to use <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs</a> and more, without the redirect lag.</p>
         <div class="url-container">
           <input type="text" class="url-input" value="${window.location.origin}?q=%s" readonly />
-          <button class="copy-button" title="Copy URL">${ICON_CLIPBOARD}</button>
+          <button class="copy-button accent-icon" title="Copy URL">${ICON_CLIPBOARD}</button>
         </div>
         <div class="url-container">
           <input type="text" class="url-input default-bang" value="${defaultBangDisplay}" readonly />
         </div>
+        <p class="page-hint">Tip: append <code>?d=bang</code> to the search URL to override the default bang per link, e.g. <code>...?q=%s&amp;d=g</code> always uses Google if no bang is used in the search term.</p>
         <div class="separator-bar"></div>
-        <h3>Browse bangs</h3>
-        <p>Type a <code>!bang</code> or search term to filter. Click "Make Default" to change your preferred search engine.</p>
+        <div class="section-header">
+          <h3>Browse bangs</h3>
+          <a href="/custom" class="bangs-btn" title="Create your own !bangs with any URL template. Custom bangs take priority over built-in ones.">Custom bangs</a>
+        </div>
+        <p class="page-desc">Type <code>!bang</code> or a search term to filter. You can copy a specific bang or click Make Default to change your preferred search engine.</p>
         <div class="search-container">
+          <span class="search-icon">${ICON_SEARCH}</span>
           <input type="text" class="search-input" placeholder="Search bangs…" />
           <div class="search-results"></div>
         </div>
       </div>
     </div>
-    <footer class="footer">
-      Unq**ck:
-      <a href="https://github.com/0mega24/" target="_blank">omega24</a>
-      &bull;&nbsp;<a href="https://github.com/0mega24/unquack" target="_blank">github</a>
-      &bull;&nbsp;<a href="https://git.csh.rit.edu/omega24/unquack" target="_blank">gitlab</a>
-      &nbsp;|&nbsp;
-      <a href="https://unduck.link" target="_blank">Und*ck</a>:
-      <a href="https://t3.chat" target="_blank">t3.chat</a>
-      &bull;&nbsp;<a href="https://x.com/theo" target="_blank">theo</a>
-      &bull;&nbsp;<a href="https://github.com/t3dotgg/unduck" target="_blank">github</a>
-    </footer>
+    ${footerHtml()}
   `;
 
   app
@@ -220,19 +203,18 @@ function renderHomePage() {
 
   const copyButton = app.querySelector<HTMLButtonElement>(".copy-button")!;
   const urlInput = app.querySelector<HTMLInputElement>(".url-input")!;
-  copyButton.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(urlInput.value);
-    copyButton.innerHTML = ICON_CLIPBOARD_CHECK;
-    setTimeout(() => {
-      copyButton.innerHTML = ICON_CLIPBOARD;
-    }, 2000);
-  });
+  attachCopyClick(copyButton, () => urlInput.value);
 
   const searchInput = app.querySelector<HTMLInputElement>(".search-input")!;
   const searchResults = app.querySelector<HTMLDivElement>(".search-results")!;
   const defaultInput = app.querySelector<HTMLInputElement>(".default-bang")!;
   const footer = app.querySelector<HTMLElement>(".footer");
   initSearch(searchInput, searchResults, defaultInput, footer);
+
+  app.querySelector<HTMLAnchorElement>(".bangs-btn")!.addEventListener("click", (e) => {
+    e.preventDefault();
+    navigateWithExit(app, (e.currentTarget as HTMLAnchorElement).href);
+  });
 }
 
 // -- Redirect ---------------------------------------------------------------
@@ -247,13 +229,21 @@ function getBangRedirectUrl(): string | null {
     return null;
   }
 
+  const customBangs = getCustomBangs();
+
+  const storedDefaultKey = localStorage.getItem("default-bang") ?? "g";
   const selectedDefaultBang =
+    customBangs.find((b) => b.t === customDefaultBang) ??
     bangs.find((b) => b.t === customDefaultBang) ??
-    bangs.find((b) => b.t === (localStorage.getItem("default-bang") ?? "g"));
+    customBangs.find((b) => b.t === storedDefaultKey) ??
+    bangs.find((b) => b.t === storedDefaultKey);
 
   const match = query.match(/!(\S+)/i);
   const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? selectedDefaultBang;
+  const selectedBang =
+    customBangs.find((b) => b.t === bangCandidate) ??
+    bangs.find((b) => b.t === bangCandidate) ??
+    selectedDefaultBang;
 
   if (query === `!${selectedBang?.t}`) {
     const redirectUrl = selectedBang?.d;
@@ -276,5 +266,10 @@ function doRedirect() {
   window.location.replace(searchUrl);
 }
 
+
 initTheme();
-doRedirect();
+if (window.location.pathname === "/custom") {
+  renderCustomPage();
+} else {
+  doRedirect();
+}

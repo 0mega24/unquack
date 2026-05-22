@@ -3,12 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="color-scheme" content="dark light" id="meta-color-scheme" />
     <meta name="description" content="A faster bang redirect." />
-    <link rel="icon" type="image/svg+xml" href="/search.svg" />
-    <!-- Apply saved theme before first paint to avoid flash -->
-    <script>if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light";</script>
-    <style>html{color-scheme:dark;background:#1a1a1a}body{background:#1a1a1a}html[data-theme="light"]{color-scheme:light;background:#f8f8fc}html[data-theme="light"] body{background:#f8f8fc}</style>
+    <link rel="icon" type="image/svg+xml" id="favicon" href="/search.svg" />
+    <!-- Apply theme before first paint to avoid flash -->
+    <script>
+      (function(){
+        var s=localStorage.getItem("theme");
+        var l=s?s==="light":window.matchMedia('(prefers-color-scheme: light)').matches;
+        var h=document.documentElement;
+        var m=document.getElementById("meta-color-scheme");
+        h.style.background=l?"#f4f9f8":"#191c1c";
+        h.style.colorScheme=l?"light":"dark";
+        if(m)m.content=l?"light dark":"dark light";
+        h.dataset.theme=l?"light":"dark";
+        if(l){var fav=document.getElementById("favicon");if(fav)fav.href="/search-light.svg";}
+      })();
+    </script>
+    <style>html,body{background:#191c1c}@media(prefers-color-scheme:light){html,body{background:#f4f9f8}}html[data-theme="light"],html[data-theme="light"] body{background:#f4f9f8}html[data-theme="dark"],html[data-theme="dark"] body{background:#191c1c}</style>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link
@@ -17,7 +29,7 @@
       media="print"
       onload="this.media='all'"
     />
-    <title>unQ**ck</title>
+    <title>Unq**ck</title>
   </head>
   <body>
     <div id="app"></div>
